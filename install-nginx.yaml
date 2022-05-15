@@ -2,10 +2,13 @@
 # install nginx using Ansible
 - name: Setup nginx server on myserver list (host group)
   hosts: myservers
-  become: true
+  become: True
+  vars:
+    nginx_version: 1.12
+    base_path: /home/ec2-user
   tasks:
     - name: Install the latest version of nginx
-      command: amazon-linux-extras install nginx1.12=latest -y
+      command: amazon-linux-extras install nginx{{ nginx_version }}=latest -y
       args:
         creates: /sbin/nginx1
 
@@ -21,11 +24,16 @@
 
     - name: Get nginx version
       command: nginx -v
+      register: nginx_version_cofirmation
+
+    - name: Print nginx version
+      debug:
+        msg: "The current version of nginx is {{ nginx_version_cofirmation.stderr_lines[0] }}"
 
     - name: Get status of nginx service
       command: systemctl status nginx
 
     - name: Copy file to remote servers
       copy:
-        src: /home/ec2-user/sample.txt
-        dest: /home/ec2-user/
+        src: "{{ base_path }}/sample.txt"
+        dest: "{{ base_path }}"
