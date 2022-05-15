@@ -3,9 +3,8 @@
 - name: Setup nginx server on myserver list (host group)
   hosts: myservers
   become: True
-  vars:
-    nginx_version: 1.12
-    base_path: /home/ec2-user
+  vars_files:
+    - external_vars.yaml
   tasks:
     - name: Install the latest version of nginx
       command: amazon-linux-extras install nginx{{ nginx_version }}=latest -y

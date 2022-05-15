@@ -1,0 +1,2 @@
+nginx_version: 1.12
+base_path: /home/ec2-user
